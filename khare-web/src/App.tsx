@@ -370,7 +370,7 @@ export default function App(): React.JSX.Element {
       const distance = 30 + Math.random() * 55;
       return {
         dx: Math.cos(angle) * distance,
-        dy: Math.sin(angle) * distance - 25, // upward initial pop
+        dy: Math.sin(angle) * distance - 25,
         color: colors[Math.floor(Math.random() * colors.length)],
         size: 3 + Math.random() * 4.5
       };
@@ -389,7 +389,7 @@ export default function App(): React.JSX.Element {
     const flowers = flowerSymbols.map((symbol, idx) => ({
       id: Date.now() + idx,
       symbol,
-      x: (idx - 2) * 22,
+      x: (idx - 2) * 20,
       y: -30 - Math.random() * 25,
       rot: -20 + Math.random() * 40
     }));
@@ -488,51 +488,51 @@ export default function App(): React.JSX.Element {
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-[#242120] font-sans antialiased selection:bg-[#DCA142]/30 selection:text-[#7C2D12]">
       {/* Top Banner Notice */}
-      <div className="bg-[#782312] text-amber-50 text-xs sm:text-sm font-medium py-2.5 px-4 text-center tracking-wide flex items-center justify-center gap-2">
-        <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-        <span>Grand Launch Special: Get Both Sambar + Podi Masala for just ₹400! (Save ₹40)</span>
+      <div className="bg-[#782312] text-amber-50 text-xs sm:text-sm font-medium py-2 px-3 sm:px-4 text-center tracking-wide flex items-center justify-center gap-1.5 sm:gap-2">
+        <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse shrink-0" />
+        <span className="truncate">Grand Launch Special: Duo for ₹400! (Save ₹40)</span>
         <span className="hidden md:inline">• Fast 2-3 Day Delivery in Modern City</span>
       </div>
 
-      {/* Main Sticky Navbar with Glassmorphism */}
-      <header className="sticky top-0 z-40 bg-[#FDFBF7]/85 backdrop-blur-md border-b border-amber-900/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      {/* Mobile-Optimized Glass Navbar */}
+      <header className="sticky top-0 z-40 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-amber-900/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
           
-          {/* BRAND LOGO with Specular Glass Glow */}
-          <div className="flex items-center gap-3.5 group cursor-pointer">
-            <div className="relative w-12 h-12 rounded-2xl bg-[#1C1917]/90 backdrop-blur-md flex items-center justify-center shadow-[0_8px_16px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.4)] border border-[#E5A83B]/60 transition-all duration-300 group-hover:scale-105 group-hover:rotate-1 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/15 to-transparent pointer-events-none" />
+          {/* BRAND LOGO & TITLE */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 shrink-0 rounded-xl sm:rounded-2xl bg-[#1C1917] flex items-center justify-center border border-[#E5A83B]/60 shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden">
               {!logoFailed ? (
                 <img
                   src="/logo.png"
                   alt="Khare Masale Logo"
-                  className="w-full h-full object-contain p-1 drop-shadow-md"
+                  className="w-full h-full object-contain p-1"
                   onError={() => setLogoFailed(true)}
                 />
               ) : (
-                <span className="font-serif italic font-black text-xl text-[#F59E0B] tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                  Khare
+                <span className="font-serif italic font-black text-sm sm:text-base text-[#F59E0B]">
+                  KM
                 </span>
               )}
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-serif text-2xl font-black tracking-tight text-[#782312] drop-shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+
+            <div className="min-w-0 leading-tight">
+              <div className="flex items-center gap-1.5 flex-nowrap">
+                <span className="font-serif text-lg sm:text-2xl font-black tracking-tight text-[#782312] truncate">
                   Khare Masale
                 </span>
-                <span className="text-[10px] uppercase font-bold tracking-widest bg-amber-100/80 backdrop-blur-xs text-amber-900 px-1.5 py-0.5 rounded border border-amber-300/80">
-                  100% Pure Veg
+                <span className="hidden sm:inline-block text-[9px] uppercase font-bold tracking-wider bg-amber-100/90 text-amber-900 px-1.5 py-0.5 rounded border border-amber-300/80 shrink-0">
+                  Veg
                 </span>
               </div>
-              <p className="text-xs font-serif italic text-amber-800 tracking-wider">
+              <p className="text-[10px] sm:text-xs font-serif italic text-amber-800 tracking-wider truncate">
                 &ldquo;Ghar mein aane do&rdquo;
               </p>
             </div>
           </div>
 
-          {/* Navigation & Cart with Spacing + Glass Floral Button */}
-          <div className="flex items-center">
-            <nav className="hidden md:flex items-center gap-8 lg:gap-11 text-sm font-semibold text-stone-700">
+          {/* Navigation & Cart */}
+          <div className="flex items-center shrink-0">
+            <nav className="hidden md:flex items-center gap-8 lg:gap-11 text-sm font-semibold text-stone-700 mr-8">
               <a href="#products" className="hover:text-[#782312] transition-colors">Product Directory</a>
               <a href="#combo" className="text-[#A63A24] hover:text-[#782312] transition-colors flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
@@ -543,8 +543,8 @@ export default function App(): React.JSX.Element {
               <a href="#contact" className="hover:text-[#782312] transition-colors">Contact</a>
             </nav>
 
-            <div className="ml-6 sm:ml-8 pl-6 sm:pl-8 border-l border-amber-900/15 flex items-center relative">
-              {/* TINY FLOWERS BLOOM EFFECT ABOVE CART */}
+            <div className="relative">
+              {/* FLOWERS BLOOM EFFECT */}
               {cartFlowers.map((flower) => (
                 <span
                   key={flower.id}
@@ -553,25 +553,25 @@ export default function App(): React.JSX.Element {
                     top: `${flower.y}px`,
                     transform: `rotate(${flower.rot}deg)`
                   }}
-                  className="absolute pointer-events-none text-xl animate-[flowerBloom_1.1s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_8px_rgba(251,191,36,0.8)] z-50 select-none"
+                  className="absolute pointer-events-none text-base sm:text-xl animate-[flowerBloom_1.1s_cubic-bezier(0.16,1,0.3,1)_forwards] filter drop-shadow-[0_0_8px_rgba(251,191,36,0.8)] z-50 select-none"
                 >
                   {flower.symbol}
                 </span>
               ))}
 
-              {/* GLASS 3D CART BUTTON */}
+              {/* COMPACT GLASS CART BUTTON */}
               <button
                 onClick={() => {
                   triggerCartFlowers();
                   setCheckoutStep('cart');
                   setIsCartOpen(true);
                 }}
-                className="relative flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-[#A63A24]/90 backdrop-blur-md text-white hover:bg-[#8F2E19] border border-white/30 shadow-[0_8px_20px_rgba(166,58,36,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] active:scale-95 transition-all duration-150 font-semibold text-sm cursor-pointer"
+                className="relative flex items-center gap-1.5 sm:gap-2.5 px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-[#A63A24] text-white hover:bg-[#8F2E19] border border-white/30 shadow-[0_4px_14px_rgba(166,58,36,0.35)] active:scale-95 transition-all text-xs sm:text-sm font-bold cursor-pointer"
                 aria-label="Open Shopping Cart"
               >
-                <ShoppingBag className="w-4 h-4 text-amber-200" />
-                <span>Cart</span>
-                <span className="bg-amber-400 text-stone-900 text-xs font-black w-5 h-5 rounded-full flex items-center justify-center shadow-xs">
+                <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-200" />
+                <span className="text-xs sm:text-sm">Cart</span>
+                <span className="bg-amber-400 text-stone-900 text-[10px] sm:text-xs font-black w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow-xs">
                   {totalCartCount}
                 </span>
               </button>
@@ -582,28 +582,28 @@ export default function App(): React.JSX.Element {
       </header>
 
       {/* DIRECT 3D PRODUCT DIRECTORY ENTRY */}
-      <section id="products" className="pt-10 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="products" className="pt-6 sm:pt-10 pb-16 sm:pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Category Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 pb-6 border-b border-amber-900/10">
+        {/* Clean Directory Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-6 sm:mb-10 pb-5 border-b border-amber-900/10">
           <div>
-            <div className="inline-block text-xs font-bold uppercase tracking-widest text-[#A63A24] bg-red-50/80 backdrop-blur-xs px-3 py-1 rounded-full border border-red-200/80 mb-2">
+            <div className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#A63A24] bg-red-50/80 px-2.5 py-1 rounded-full border border-red-200/80 mb-2">
               Product Directory • Small Batch Milled
             </div>
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#36130B]">
+            <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-black text-[#36130B] leading-tight">
               Handcrafted Spice Essentials
             </h1>
-            <p className="text-stone-600 text-sm sm:text-base mt-1">
+            <p className="text-stone-600 text-xs sm:text-base mt-1">
               Stone-ground roasted lentils &amp; slow-cooked spices.
             </p>
           </div>
-          <div className="text-xs font-mono text-stone-500 flex items-center gap-3">
-            <span className="flex items-center gap-1.5"><Leaf className="w-3.5 h-3.5 text-emerald-600" /> 100% Veg</span>
-            <span className="flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-amber-700" /> Zero Chemicals</span>
+          <div className="flex items-center gap-3 text-[11px] sm:text-xs font-mono text-stone-500 pt-1">
+            <span className="flex items-center gap-1"><Leaf className="w-3.5 h-3.5 text-emerald-600" /> 100% Pure Veg</span>
+            <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-amber-700" /> Zero Chemicals</span>
           </div>
         </div>
 
-        {/* 3D PRODUCT CARDS with Frosted Glass Layering */}
+        {/* 3D PRODUCT CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           {PRODUCTS.map((product) => (
             <div
@@ -667,7 +667,7 @@ export default function App(): React.JSX.Element {
                 </div>
               </div>
 
-              {/* Bottom Price & Frosted Glass Action Footer */}
+              {/* Bottom Price & Action Footer */}
               <div className="px-6 py-5 sm:px-8 sm:py-6 bg-white/50 backdrop-blur-md border-t border-amber-900/10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
                   <div className="text-xs text-stone-500 uppercase tracking-wider font-semibold">Net Price (150g)</div>
@@ -835,7 +835,6 @@ export default function App(): React.JSX.Element {
               </div>
             </div>
             
-            {/* GLASS SAMBAR SHORTCUT BUTTON */}
             <button
               onClick={(e) => addToCart(PRODUCTS[1], e)}
               className="px-5 py-2.5 rounded-2xl bg-amber-100/80 backdrop-blur-md hover:bg-amber-200 border border-amber-300/80 text-amber-900 text-xs font-black shrink-0 active:scale-95 transition-all duration-150 cursor-pointer shadow-xs"
@@ -931,7 +930,7 @@ export default function App(): React.JSX.Element {
         </div>
       </section>
 
-      {/* Cart Drawer with Frosted Glass Panels */}
+      {/* Cart Drawer */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden">
           <div 
@@ -1142,7 +1141,6 @@ export default function App(): React.JSX.Element {
 
                   {checkoutStep === 'cart' ? (
                     <div className="space-y-2.5 pt-1">
-                      {/* GLASS PROCEED BUTTON */}
                       <button
                         onClick={() => setCheckoutStep('details')}
                         className="w-full py-3 rounded-2xl bg-[#A63A24]/90 backdrop-blur-md hover:bg-[#8F2E19] border border-white/30 text-white font-bold text-sm shadow-[0_8px_20px_rgba(166,58,36,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
@@ -1151,7 +1149,6 @@ export default function App(): React.JSX.Element {
                         <ChevronRight className="w-4 h-4" />
                       </button>
 
-                      {/* GLASS WHATSAPP DIRECT BUTTON */}
                       <button
                         onClick={handleWhatsAppOrder}
                         className="w-full py-2.5 rounded-2xl bg-emerald-700/90 backdrop-blur-md hover:bg-emerald-800 border border-white/30 text-white font-bold text-xs shadow-md active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
@@ -1184,7 +1181,7 @@ export default function App(): React.JSX.Element {
         </div>
       )}
 
-      {/* Product Detail Modal with Frosted Glass Panels */}
+      {/* Product Detail Modal */}
       {selectedProductModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -1269,7 +1266,7 @@ export default function App(): React.JSX.Element {
               </div>
             </div>
 
-            <div className="p-3.5 bg-amber-50/70 rounded-2xl border border-amber-200 text-xs text-stone-700 space-y-1">
+            <div className="p-3.5 bg-amber-50/70 rounded-xl border border-amber-200 text-xs text-stone-700 space-y-1">
               <div className="font-bold text-amber-950">Storage Instructions:</div>
               <p>{selectedProductModal.storage}</p>
               <div className="text-[11px] text-amber-800 font-medium pt-1">
@@ -1282,7 +1279,6 @@ export default function App(): React.JSX.Element {
                 ₹{selectedProductModal.price}
               </div>
               
-              {/* GLASS ADD TO CART IN MODAL */}
               <button
                 onClick={(e) => {
                   addToCart(selectedProductModal, e);
@@ -1421,7 +1417,7 @@ export default function App(): React.JSX.Element {
         </div>
       </footer>
 
-      {/* INLINE CSS KEYFRAMES FOR POWDER PARTICLES & FLOWER BLOOM */}
+      {/* INLINE CSS KEYFRAMES */}
       <style>{`
         @keyframes powderParticle {
           0% {
