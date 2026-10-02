@@ -79,31 +79,20 @@ const ChevronRight = ({ className = "w-4 h-4" }: { className?: string }) => (
   </svg>
 );
 
-const Flame = ({ className = "w-4 h-4" }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-  </svg>
-);
-
-const HeartHandshake = ({ className = "w-4 h-4" }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-  </svg>
-);
-
-const Award = ({ className = "w-4 h-4" }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V6a2 2 0 10-2 2h2zm0 13l-3-3m3 3l3-3m-6-8h6" />
-  </svg>
-);
-
 const MessageCircle = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
   </svg>
 );
 
-// --- REUSABLE 3D PARALLAX IMAGE SLIDER WITH GLASS BACKDROP ---
+const MapPin = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+);
+
+// --- REUSABLE 3D IMAGE SLIDER ---
 function ImageSlider({ images, alt = 'Product Image' }: { images?: string[]; alt?: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -201,7 +190,7 @@ function ImageSlider({ images, alt = 'Product Image' }: { images?: string[]; alt
   );
 }
 
-// --- TYPESCRIPT INTERFACES ---
+// --- INTERFACES ---
 interface NutritionItem {
   label: string;
   value: string;
@@ -217,7 +206,6 @@ interface Product {
   mrp: number;
   images: string[];
   tagline: string;
-  accentColor: string;
   badge: string;
   description: string;
   proteinNote: string;
@@ -252,7 +240,19 @@ interface CartItem {
   quantity: number;
 }
 
-// --- CATALOG DATA ---
+interface DeliveryAddress {
+  fullName: string;
+  phone: string;
+  pincode: string;
+  houseNo: string;
+  street: string;
+  landmark: string;
+  city: string;
+  state: string;
+  addressType: 'Home' | 'Work';
+  paymentMethod: 'COD' | 'UPI';
+}
+
 const PRODUCTS: Product[] = [
   {
     id: 'podi-masala',
@@ -264,7 +264,6 @@ const PRODUCTS: Product[] = [
     mrp: 240,
     images: ['/podi.png', '/podi2.png', '/podi3.png'],
     tagline: 'The only multipurpose Podi Masale you will ever need.',
-    accentColor: '#D97706',
     badge: 'High Protein Blend',
     description:
       'If your meals are looking sad, bland, and entirely forgettable, your plate is practically begging for a little Podi magic. Crafted with roasted lentils and aromatic spices—this is the ultimate flavor upgrade everyday food desperately needs.',
@@ -296,7 +295,6 @@ const PRODUCTS: Product[] = [
     mrp: 240,
     images: ['/sambar.png', '/sambar2.png', '/sambar3.png'],
     tagline: 'Zero drama of ten different spice jars.',
-    accentColor: '#B91C1C',
     badge: 'Authentic South-Style',
     description:
       'The only Sambar Masale you will ever need. Because your kitchen does not need the chaos of ten different spice jars. We kept it simple, hassle-free, and 100% preservative-free—keeping it as fresh as your attitude from the first scoop to the last.',
@@ -340,18 +338,25 @@ export default function App(): React.JSX.Element {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedProductModal, setSelectedProductModal] = useState<Product | null>(null);
-  const [checkoutStep, setCheckoutStep] = useState<'cart' | 'details' | 'success'>('cart');
-  const [customerDetails, setCustomerDetails] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    city: 'Modern City',
-    paymentMethod: 'COD'
-  });
+  const [checkoutStep, setCheckoutStep] = useState<'cart' | 'address' | 'success'>('cart');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [logoFailed, setLogoFailed] = useState(false);
 
-  // --- POWDER BURST & FLORAL GLOW PARTICLES ---
+  // Flipkart / Amazon style delivery address
+  const [address, setAddress] = useState<DeliveryAddress>({
+    fullName: '',
+    phone: '',
+    pincode: '',
+    houseNo: '',
+    street: '',
+    landmark: '',
+    city: '',
+    state: '',
+    addressType: 'Home',
+    paymentMethod: 'COD'
+  });
+
+  // Particle Effects
   const [powderBursts, setPowderBursts] = useState<
     Array<{ id: number; x: number; y: number; particles: Array<{ dx: number; dy: number; color: string; size: number }> }>
   >([]);
@@ -461,28 +466,30 @@ export default function App(): React.JSX.Element {
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   }, [cart]);
 
+  // Form submission -> Confirmation
+  const handleAddressSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!address.fullName || !address.phone || !address.pincode || !address.houseNo || !address.city || !address.state) {
+      alert("Please fill in all mandatory address fields marked with *");
+      return;
+    }
+    setCheckoutStep('success');
+  };
+
+  // Formatted WhatsApp Order with Complete Flipkart-style Address
   const handleWhatsAppOrder = () => {
     if (cart.length === 0) return;
     const itemList = cart
       .map((item) => `• ${item.name} (${item.weight}) x ${item.quantity} = ₹${item.price * item.quantity}`)
       .join('%0A');
 
-    const addressText = customerDetails.name
-      ? `%0A%0A*Delivery Details:*%0AName: ${encodeURIComponent(customerDetails.name)}%0APhone: ${encodeURIComponent(customerDetails.phone)}%0AAddress: ${encodeURIComponent(customerDetails.address)}, ${encodeURIComponent(customerDetails.city)}%0APayment: ${customerDetails.paymentMethod}`
+    const addressPayload = address.fullName
+      ? `%0A%0A📦 *SHIPPING DETAILS (India Delivery):*%0A👤 Name: ${encodeURIComponent(address.fullName)}%0A📞 Phone: ${encodeURIComponent(address.phone)}%0A🏠 Address: ${encodeURIComponent(`${address.houseNo}, ${address.street}${address.landmark ? ', Near ' + address.landmark : ''}`)}%0A📍 City & State: ${encodeURIComponent(`${address.city}, ${address.state} - ${address.pincode}`)}%0A🏷️ Type: ${address.addressType}%0A💳 Payment: ${address.paymentMethod}`
       : '';
 
-    const message = `Namaste Khare Masale team! 🙏%0AI would like to place an order:%0A%0A${itemList}%0A%0A*Total Amount:* ₹${cartTotal} (Saved ₹${cartSavings})${addressText}%0A%0APlease confirm my order!`;
+    const message = `Namaste Khare Masale team! 🙏%0AI would like to place an order:%0A%0A${itemList}%0A%0A*Total Amount:* ₹${cartTotal} (Saved ₹${cartSavings})${addressPayload}%0A%0APlease confirm my order & dispatch details!`;
 
     window.open(`https://wa.me/918796617874?text=${message}`, '_blank');
-  };
-
-  const handleStandardCheckoutSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customerDetails.name || !customerDetails.phone || !customerDetails.address) {
-      alert("Please fill in your delivery details.");
-      return;
-    }
-    setCheckoutStep('success');
   };
 
   return (
@@ -491,14 +498,14 @@ export default function App(): React.JSX.Element {
       <div className="bg-[#782312] text-amber-50 text-xs sm:text-sm font-medium py-2 px-3 sm:px-4 text-center tracking-wide flex items-center justify-center gap-1.5 sm:gap-2">
         <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse shrink-0" />
         <span className="truncate">Grand Launch Special: Duo for ₹400! (Save ₹40)</span>
-        <span className="hidden md:inline">• Fast 2-3 Day Delivery in Modern City</span>
+        <span className="hidden md:inline">• Fast 2-4 Day Delivery All Over India</span>
       </div>
 
-      {/* Mobile-Optimized Glass Navbar */}
+      {/* Responsive Glass Navbar */}
       <header className="sticky top-0 z-40 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-amber-900/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
           
-          {/* BRAND LOGO & TITLE */}
+          {/* Logo & Brand */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <div className="relative w-9 h-9 sm:w-11 sm:h-11 shrink-0 rounded-xl sm:rounded-2xl bg-[#1C1917] flex items-center justify-center border border-[#E5A83B]/60 shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden">
               {!logoFailed ? (
@@ -544,7 +551,6 @@ export default function App(): React.JSX.Element {
             </nav>
 
             <div className="relative">
-              {/* FLOWERS BLOOM EFFECT */}
               {cartFlowers.map((flower) => (
                 <span
                   key={flower.id}
@@ -559,7 +565,6 @@ export default function App(): React.JSX.Element {
                 </span>
               ))}
 
-              {/* COMPACT GLASS CART BUTTON */}
               <button
                 onClick={() => {
                   triggerCartFlowers();
@@ -583,8 +588,6 @@ export default function App(): React.JSX.Element {
 
       {/* DIRECT 3D PRODUCT DIRECTORY ENTRY */}
       <section id="products" className="pt-6 sm:pt-10 pb-16 sm:pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Clean Directory Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-6 sm:mb-10 pb-5 border-b border-amber-900/10">
           <div>
             <div className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-[#A63A24] bg-red-50/80 px-2.5 py-1 rounded-full border border-red-200/80 mb-2">
@@ -611,11 +614,8 @@ export default function App(): React.JSX.Element {
               className="bg-white/80 backdrop-blur-md rounded-3xl border border-white/80 shadow-[0_12px_36px_rgba(60,25,10,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)] hover:shadow-[0_20px_48px_rgba(60,25,10,0.14)] transition-all duration-300 overflow-hidden flex flex-col justify-between"
             >
               <div className="p-6 sm:p-8 space-y-5 flex-1 flex flex-col">
-                
-                {/* 3D Parallax Image Slider */}
                 <ImageSlider images={product.images} alt={product.name} />
 
-                {/* Badges Bar */}
                 <div className="flex items-center justify-between gap-2 pt-1">
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full bg-emerald-600 inline-block border border-emerald-800" title="100% Vegetarian" />
@@ -631,32 +631,27 @@ export default function App(): React.JSX.Element {
                   </span>
                 </div>
 
-                {/* Title */}
                 <div className="min-h-[3.8rem] sm:min-h-[4.2rem] flex items-center">
                   <h2 className="font-serif text-2xl sm:text-3xl font-black text-stone-900 leading-tight">
                     {product.name}
                   </h2>
                 </div>
 
-                {/* Subtitle in Hindi & Urdu */}
                 <div className="flex items-center gap-2 text-stone-500 font-serif italic text-sm h-6">
                   <span>{product.hindiName}</span>
                   <span>•</span>
                   <span dir="rtl">{product.urduName}</span>
                 </div>
 
-                {/* Description */}
                 <p className="text-stone-600 text-sm sm:text-base leading-relaxed min-h-[5.5rem] sm:min-h-[6.2rem]">
                   {product.description}
                 </p>
 
-                {/* Frosted Protein Highlight Box */}
                 <div className="p-3.5 rounded-2xl bg-white/60 backdrop-blur-sm border border-amber-200/70 shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] text-xs sm:text-sm text-stone-700 flex items-start gap-2.5 min-h-[4.2rem]">
                   <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                   <span>{product.proteinNote}</span>
                 </div>
 
-                {/* Nutritional Pills */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 text-xs mt-auto">
                   {product.nutritionPer100g.slice(0, 3).map((item, i) => (
                     <div key={i} className="bg-stone-50/80 backdrop-blur-xs p-2.5 rounded-xl border border-stone-200/50">
@@ -667,7 +662,6 @@ export default function App(): React.JSX.Element {
                 </div>
               </div>
 
-              {/* Bottom Price & Action Footer */}
               <div className="px-6 py-5 sm:px-8 sm:py-6 bg-white/50 backdrop-blur-md border-t border-amber-900/10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
                   <div className="text-xs text-stone-500 uppercase tracking-wider font-semibold">Net Price (150g)</div>
@@ -678,7 +672,6 @@ export default function App(): React.JSX.Element {
                 </div>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">
-                  {/* GLASS BUTTON: VIEW INGREDIENTS */}
                   <button
                     onClick={() => setSelectedProductModal(product)}
                     className="flex-1 sm:flex-none px-4 py-2.5 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-stone-700 text-xs font-bold shadow-[0_4px_12px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,0.9)] hover:bg-white active:scale-95 transition-all duration-150 cursor-pointer"
@@ -686,7 +679,6 @@ export default function App(): React.JSX.Element {
                     View Ingredients
                   </button>
 
-                  {/* GLASS BUTTON: ADD TO CART WITH POWDER BURST */}
                   <button
                     onClick={(e) => addToCart(product, e)}
                     className="flex-1 sm:flex-none px-5 py-2.5 rounded-2xl bg-[#A63A24]/90 backdrop-blur-md border border-white/30 text-white text-xs sm:text-sm font-bold shadow-[0_8px_20px_rgba(166,58,36,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:bg-[#8F2E19] active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
@@ -701,11 +693,10 @@ export default function App(): React.JSX.Element {
         </div>
       </section>
 
-      {/* Combo Banner Section with Rich Glass Card */}
+      {/* Combo Banner Section */}
       <section id="combo" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#782312] via-[#8F2E19] to-[#A63A24] text-white shadow-[0_20px_50px_rgba(120,35,18,0.3)] p-8 sm:p-12 lg:p-14 border border-white/20">
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
             <div className="lg:col-span-8 space-y-4 text-center lg:text-left">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-stone-900 font-black text-xs uppercase tracking-wider shadow-sm">
                 <Sparkles className="w-3.5 h-3.5 text-stone-900" />
@@ -743,7 +734,6 @@ export default function App(): React.JSX.Element {
                   </div>
                 </div>
 
-                {/* GLASS BUTTON: CLAIM COMBO WITH POWDER BURST */}
                 <button
                   onClick={(e) => addToCart(COMBO_DEAL, e)}
                   className="w-full py-3.5 px-4 rounded-2xl bg-amber-400/95 backdrop-blur-md text-stone-900 font-black text-sm shadow-[0_8px_24px_rgba(245,158,11,0.4),inset_0_1px_1px_rgba(255,255,255,0.7)] border border-white/40 hover:bg-amber-300 active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
@@ -751,186 +741,35 @@ export default function App(): React.JSX.Element {
                   <ShoppingBag className="w-4 h-4" />
                   <span>Claim Combo Deal</span>
                 </button>
-
-                <p className="text-[11px] text-amber-100/70">
-                  ⚡ Limited first batch inventory available.
-                </p>
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* How to Use Section */}
-      <section id="how-to-use" className="py-20 bg-[#F7F2E7]/70 border-y border-amber-900/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100/80 backdrop-blur-xs px-3 py-1 rounded-full border border-amber-300">
-              Kitchen Tips &amp; Magic
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-[#36130B]">
-              How to Enjoy Your Podi &amp; Sambar
-            </h2>
-            <p className="text-stone-600 text-sm sm:text-base">
-              From comforting South-Indian breakfasts to quick veggie roasts, here are the easiest ways to unlock maximum flavor:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                step: '01',
-                title: 'The Classic Idli Dip',
-                icon: '🥞',
-                desc: 'Mix 2 tablespoons of Khare Podi with warm melted ghee or cold-pressed sesame oil. Dip hot idlis straight in!'
-              },
-              {
-                step: '02',
-                title: 'Crispy Dosa Topping',
-                icon: '🍳',
-                desc: 'Sprinkle podi generously over the dosa right as it sizzles on the tawa, drizzle a dash of oil, and fold.'
-              },
-              {
-                step: '03',
-                title: 'Comforting Podi Rice',
-                icon: '🍚',
-                desc: 'Stir a spoonful of Podi directly into hot, freshly cooked steamed rice with melted ghee. Pure soul food.'
-              },
-              {
-                step: '04',
-                title: 'Crunchy Veggie Toss',
-                icon: '🥔',
-                desc: 'Toss diced baby potatoes, cauliflower, or bhindi with oil and podi before air-frying or pan-roasting.'
-              }
-            ].map((card, idx) => (
-              <div
-                key={idx}
-                className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)] hover:shadow-md transition-shadow relative space-y-3"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-3xl">{card.icon}</span>
-                  <span className="font-mono text-xs font-black text-amber-800/40 bg-amber-50/80 px-2 py-0.5 rounded">
-                    {card.step}
-                  </span>
-                </div>
-                <h4 className="font-serif text-lg font-bold text-stone-900 pt-1">
-                  {card.title}
-                </h4>
-                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-                  {card.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.04)] flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4 text-center md:text-left">
-              <span className="text-3xl">🍲</span>
-              <div>
-                <h5 className="font-serif font-bold text-stone-900 text-base">Making aromatic Sambar with Khare Powder?</h5>
-                <p className="text-xs sm:text-sm text-stone-600">
-                  Boil Toor dal with tamarind pulp &amp; your favorite veggies (drumsticks, shallots, pumpkin). Add 2 spoons of Khare Sambar Powder in the last 5 minutes for authentic aroma without burning the spices!
-                </p>
-              </div>
-            </div>
-            
-            <button
-              onClick={(e) => addToCart(PRODUCTS[1], e)}
-              className="px-5 py-2.5 rounded-2xl bg-amber-100/80 backdrop-blur-md hover:bg-amber-200 border border-amber-300/80 text-amber-900 text-xs font-black shrink-0 active:scale-95 transition-all duration-150 cursor-pointer shadow-xs"
-            >
-              Get Sambar Powder (₹220)
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us Section */}
-      <section id="why-us" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#A63A24] bg-red-50/80 backdrop-blur-xs px-3 py-1 rounded-full border border-red-200">
-            Purity You Can Taste
-          </span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-[#36130B]">
-            Why Khare Masale Belongs in Your Pantry
-          </h2>
-          <p className="text-stone-600 text-sm sm:text-base">
-            Crafted for modern homes that crave traditional authenticity without the hassle.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            {
-              title: 'Product of India',
-              desc: 'Sourced directly from native spice fields with uncompromised quality and heritage recipes.',
-              icon: Award
-            },
-            {
-              title: 'Pocket-Friendly Value',
-              desc: 'Premium stone-ground ingredients that fit comfortably within your weekly kitchen budget.',
-              icon: Sparkles
-            },
-            {
-              title: 'Hassle-Free & Mess-Free',
-              desc: 'Designed for ultimate convenience—no multiple spice measuring, no mess, no stress.',
-              icon: ShieldCheck
-            },
-            {
-              title: 'Space-Efficient Pouches',
-              desc: 'Smart 150g stand-up packaging that saves counter and pantry space while staying airtight.',
-              icon: Leaf
-            },
-            {
-              title: 'Fresh & Preservative-Free',
-              desc: 'Pure, fresh taste without any artificial additives, fillers, colors, or MSG.',
-              icon: Flame
-            },
-            {
-              title: '100% Sustainable Packaging',
-              desc: 'Eco-conscious packaging crafted to be gentle on the earth while locking in spice freshness.',
-              icon: HeartHandshake
-            }
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="p-6 rounded-2xl bg-white/75 backdrop-blur-md border border-white/80 shadow-[0_8px_20px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.9)] hover:border-amber-700/30 transition-all flex flex-col justify-start space-y-3"
-            >
-              <div className="w-10 h-10 rounded-xl bg-amber-50/90 border border-amber-200/80 flex items-center justify-center text-[#A63A24]">
-                <item.icon className="w-5 h-5" />
-              </div>
-              <h4 className="font-serif text-lg font-bold text-stone-900">
-                {item.title}
-              </h4>
-              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
-                {item.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 rounded-3xl bg-white/80 backdrop-blur-md border border-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.04)] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* Why Choose Us & Express All-India Shipping */}
+      <section id="why-us" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-white/80 backdrop-blur-md border border-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.04)] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-[#A63A24] text-white flex items-center justify-center shrink-0 shadow-md">
               <Truck className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h4 className="font-serif text-xl font-bold text-stone-900">Express Delivery in Modern City</h4>
+              <h4 className="font-serif text-xl font-bold text-stone-900">Express Delivery Across India</h4>
               <p className="text-xs sm:text-sm text-stone-600 max-w-xl">
-                Orders delivered in <span className="font-bold text-stone-900">2 to 3 business days</span>. 
-                Fulfillment standards compliant with Goldie Masale shipping policy for safe transit.
+                Orders delivered directly to your doorstep in <span className="font-bold text-stone-900">2 to 4 business days</span> with live courier tracking.
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-xs font-semibold text-emerald-800 bg-emerald-100/80 px-3 py-1.5 rounded-full border border-emerald-300">
-              ✓ Tamper-proof packaging
+              ✓ Free Delivery Nationwide
             </span>
           </div>
         </div>
       </section>
 
-      {/* Cart Drawer */}
+      {/* Cart Drawer / Modern Flipkart & Amazon Style Address Drawer */}
       {isCartOpen && (
         <div className="fixed inset-0 z-50 overflow-hidden">
           <div 
@@ -938,26 +777,41 @@ export default function App(): React.JSX.Element {
             className="absolute inset-0 bg-stone-900/50 backdrop-blur-xs transition-opacity" 
           />
 
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-            <div className="w-screen max-w-md bg-white/95 backdrop-blur-xl shadow-2xl flex flex-col justify-between border-l border-white/60">
+          <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
+            <div className="w-screen max-w-lg bg-white/95 backdrop-blur-xl shadow-2xl flex flex-col justify-between border-l border-white/60">
               
-              <div className="p-6 border-b border-stone-200/80 flex items-center justify-between bg-white/60 backdrop-blur-md">
+              {/* Header */}
+              <div className="p-4 sm:p-6 border-b border-stone-200/80 flex items-center justify-between bg-white/70 backdrop-blur-md">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-[#A63A24]" />
-                  <h3 className="font-serif text-xl font-bold text-stone-900">Your Fresh Spices</h3>
-                  <span className="text-xs font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full">
-                    {totalCartCount}
-                  </span>
+                  {checkoutStep === 'address' ? (
+                    <button
+                      onClick={() => setCheckoutStep('cart')}
+                      className="p-1 rounded-lg hover:bg-stone-200 text-stone-600 mr-1 text-sm font-bold flex items-center"
+                    >
+                      ←
+                    </button>
+                  ) : (
+                    <ShoppingBag className="w-5 h-5 text-[#A63A24]" />
+                  )}
+                  <h3 className="font-serif text-lg sm:text-xl font-bold text-stone-900">
+                    {checkoutStep === 'cart' ? 'Your Shopping Bag' : checkoutStep === 'address' ? 'Delivery Address' : 'Order Placed'}
+                  </h3>
+                  {checkoutStep === 'cart' && (
+                    <span className="text-xs font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full">
+                      {totalCartCount}
+                    </span>
+                  )}
                 </div>
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="p-2 rounded-full hover:bg-stone-200/80 text-stone-500 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-stone-200/80 text-stone-500 transition-colors cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="p-6 overflow-y-auto flex-1 space-y-4">
+              {/* Body */}
+              <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4">
                 {cart.length === 0 ? (
                   <div className="text-center py-16 space-y-4">
                     <div className="text-5xl">🥣</div>
@@ -1014,123 +868,218 @@ export default function App(): React.JSX.Element {
                       ))}
                     </div>
 
-                    <div className="p-3 bg-amber-50/80 backdrop-blur-xs rounded-xl border border-amber-200/80 text-xs text-amber-900 flex items-center gap-2">
-                      <Truck className="w-4 h-4 text-amber-700 shrink-0" />
-                      <span>Delivery in <strong>2-3 days</strong> across Modern City.</span>
+                    <div className="p-3 bg-emerald-50/80 backdrop-blur-xs rounded-xl border border-emerald-200/80 text-xs text-emerald-900 flex items-center gap-2">
+                      <Truck className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span><strong>Free Express Delivery</strong> included with every order.</span>
                     </div>
                   </>
-                ) : checkoutStep === 'details' ? (
-                  <form onSubmit={handleStandardCheckoutSubmit} className="space-y-3.5 text-xs">
-                    <div className="text-sm font-serif font-bold text-stone-900 border-b pb-2">
-                      Enter Delivery Address (Modern City)
-                    </div>
-                    <div>
-                      <label className="block text-stone-700 font-semibold mb-1">Your Full Name</label>
-                      <input
-                        type="text"
-                        required
-                        value={customerDetails.name}
-                        onChange={(e) => setCustomerDetails({ ...customerDetails, name: e.target.value })}
-                        placeholder="e.g. Ritik Khare"
-                        className="w-full p-2.5 rounded-xl border border-stone-300 bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#A63A24]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-stone-700 font-semibold mb-1">Mobile / WhatsApp Number</label>
-                      <input
-                        type="tel"
-                        required
-                        value={customerDetails.phone}
-                        onChange={(e) => setCustomerDetails({ ...customerDetails, phone: e.target.value })}
-                        placeholder="e.g. 9220288874"
-                        className="w-full p-2.5 rounded-xl border border-stone-300 bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#A63A24]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-stone-700 font-semibold mb-1">Street Address &amp; Landmark</label>
-                      <textarea
-                        required
-                        rows={2}
-                        value={customerDetails.address}
-                        onChange={(e) => setCustomerDetails({ ...customerDetails, address: e.target.value })}
-                        placeholder="House / Flat No., Street, Landmark"
-                        className="w-full p-2.5 rounded-xl border border-stone-300 bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#A63A24]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-stone-700 font-semibold mb-1">City</label>
-                      <input
-                        type="text"
-                        disabled
-                        value={customerDetails.city}
-                        className="w-full p-2.5 rounded-xl bg-stone-100 border border-stone-300 text-stone-600 font-semibold cursor-not-allowed"
-                      />
+                ) : checkoutStep === 'address' ? (
+                  /* FLIPKART & AMAZON STYLE CHECKOUT FORM */
+                  <form onSubmit={handleAddressSubmit} className="space-y-4 text-xs">
+                    {/* Contact Info Header */}
+                    <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 space-y-3">
+                      <div className="font-serif font-bold text-stone-800 flex items-center gap-1.5 text-xs">
+                        <span>1. Contact Details</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-stone-600 font-medium mb-1">Full Name *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Savyasanchi Pateriya"
+                            value={address.fullName}
+                            onChange={(e) => setAddress({ ...address, fullName: e.target.value })}
+                            className="w-full p-2.5 rounded-lg border border-stone-300 bg-white focus:ring-2 focus:ring-[#A63A24] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-stone-600 font-medium mb-1">Mobile Number (10 digits) *</label>
+                          <input
+                            type="tel"
+                            required
+                            placeholder="e.g. 9876543210"
+                            pattern="[0-9]{10}"
+                            value={address.phone}
+                            onChange={(e) => setAddress({ ...address, phone: e.target.value })}
+                            className="w-full p-2.5 rounded-lg border border-stone-300 bg-white focus:ring-2 focus:ring-[#A63A24] focus:outline-none"
+                          />
+                        </div>
+                      </div>
                     </div>
 
-                    <div>
-                      <label className="block text-stone-700 font-semibold mb-1">Payment Method</label>
+                    {/* Address Fields */}
+                    <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 space-y-3">
+                      <div className="font-serif font-bold text-stone-800 flex items-center gap-1.5 text-xs">
+                        <MapPin className="w-3.5 h-3.5 text-[#A63A24]" />
+                        <span>2. Delivery Address</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-stone-600 font-medium mb-1">Pincode (6 digits) *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. 110001"
+                            maxLength={6}
+                            value={address.pincode}
+                            onChange={(e) => setAddress({ ...address, pincode: e.target.value })}
+                            className="w-full p-2.5 rounded-lg border border-stone-300 bg-white focus:ring-2 focus:ring-[#A63A24] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-stone-600 font-medium mb-1">Flat, House no., Building *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Flat 402, Tower B"
+                            value={address.houseNo}
+                            onChange={(e) => setAddress({ ...address, houseNo: e.target.value })}
+                            className="w-full p-2.5 rounded-lg border border-stone-300 bg-white focus:ring-2 focus:ring-[#A63A24] focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-stone-600 font-medium mb-1">Area, Street, Sector, Village *</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. MG Road, Near City Mall"
+                          value={address.street}
+                          onChange={(e) => setAddress({ ...address, street: e.target.value })}
+                          className="w-full p-2.5 rounded-lg border border-stone-300 bg-white focus:ring-2 focus:ring-[#A63A24] focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-stone-600 font-medium mb-1">City / District *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Delhi / Bengaluru"
+                            value={address.city}
+                            onChange={(e) => setAddress({ ...address, city: e.target.value })}
+                            className="w-full p-2.5 rounded-lg border border-stone-300 bg-white focus:ring-2 focus:ring-[#A63A24] focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-stone-600 font-medium mb-1">State *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Karnataka / UP"
+                            value={address.state}
+                            onChange={(e) => setAddress({ ...address, state: e.target.value })}
+                            className="w-full p-2.5 rounded-lg border border-stone-300 bg-white focus:ring-2 focus:ring-[#A63A24] focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-stone-600 font-medium mb-1">Address Type</label>
+                        <div className="flex gap-4">
+                          {(['Home', 'Work'] as const).map((type) => (
+                            <label key={type} className="flex items-center gap-1.5 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="addressType"
+                                checked={address.addressType === type}
+                                onChange={() => setAddress({ ...address, addressType: type })}
+                                className="text-[#A63A24] focus:ring-[#A63A24]"
+                              />
+                              <span className="text-stone-700">{type}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Payment Mode */}
+                    <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 space-y-2">
+                      <div className="font-serif font-bold text-stone-800 text-xs">3. Payment Mode</div>
                       <div className="grid grid-cols-2 gap-2">
                         <button
                           type="button"
-                          onClick={() => setCustomerDetails({ ...customerDetails, paymentMethod: 'COD' })}
-                          className={`p-2.5 rounded-xl border font-bold text-center transition-all cursor-pointer ${
-                            customerDetails.paymentMethod === 'COD'
-                              ? 'border-[#A63A24] bg-red-50 text-[#A63A24] shadow-xs'
-                              : 'border-stone-200 bg-white/70 text-stone-700'
+                          onClick={() => setAddress({ ...address, paymentMethod: 'COD' })}
+                          className={`p-2.5 rounded-xl border font-bold text-center transition-all ${
+                            address.paymentMethod === 'COD'
+                              ? 'border-[#A63A24] bg-red-50 text-[#A63A24]'
+                              : 'border-stone-200 bg-white text-stone-700'
                           }`}
                         >
                           Cash on Delivery
                         </button>
                         <button
                           type="button"
-                          onClick={() => setCustomerDetails({ ...customerDetails, paymentMethod: 'UPI' })}
-                          className={`p-2.5 rounded-xl border font-bold text-center transition-all cursor-pointer ${
-                            customerDetails.paymentMethod === 'UPI'
-                              ? 'border-[#A63A24] bg-red-50 text-[#A63A24] shadow-xs'
-                              : 'border-stone-200 bg-white/70 text-stone-700'
+                          onClick={() => setAddress({ ...address, paymentMethod: 'UPI' })}
+                          className={`p-2.5 rounded-xl border font-bold text-center transition-all ${
+                            address.paymentMethod === 'UPI'
+                              ? 'border-[#A63A24] bg-red-50 text-[#A63A24]'
+                              : 'border-stone-200 bg-white text-stone-700'
                           }`}
                         >
-                          UPI / GPay / PhonePe
+                          UPI / QR Pay
                         </button>
                       </div>
                     </div>
                   </form>
                 ) : (
-                  <div className="text-center py-12 space-y-3">
-                    <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto">
-                      <Check className="w-6 h-6" />
+                  /* ORDER CONFIRMATION RECEIPT */
+                  <div className="text-center py-6 space-y-4">
+                    <div className="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                      <Check className="w-8 h-8" />
                     </div>
-                    <h4 className="font-serif text-xl font-bold text-stone-900">Order Received!</h4>
-                    <p className="text-xs text-stone-600 max-w-xs mx-auto">
-                      Thank you, {customerDetails.name}! Your order will be dispatched to {customerDetails.address}, {customerDetails.city} within 2-3 business days.
-                    </p>
-                    <div className="p-3 bg-stone-50 rounded-xl text-xs font-mono text-stone-700">
-                      Payment Mode: {customerDetails.paymentMethod} • Total: ₹{cartTotal}
+                    <div className="space-y-1">
+                      <h4 className="font-serif text-2xl font-bold text-stone-900">Order Placed Successfully!</h4>
+                      <p className="text-xs text-stone-600">
+                        Thank you, <span className="font-bold text-stone-900">{address.fullName}</span>! Your items will be dispatched to your delivery address shortly.
+                      </p>
                     </div>
+
+                    <div className="bg-stone-50 p-4 rounded-2xl border border-stone-200 text-left text-xs space-y-2">
+                      <div className="font-serif font-bold text-stone-900 border-b pb-1 flex justify-between">
+                        <span>Shipping Summary</span>
+                        <span className="font-mono text-[10px] text-stone-500">COD / Express</span>
+                      </div>
+                      <div className="text-stone-700 leading-relaxed">
+                        <div><strong>Deliver To:</strong> {address.fullName} ({address.phone})</div>
+                        <div>{address.houseNo}, {address.street}</div>
+                        <div>{address.city}, {address.state} - {address.pincode} ({address.addressType})</div>
+                      </div>
+                      <div className="border-t pt-2 flex justify-between font-bold text-stone-900">
+                        <span>Total Payable:</span>
+                        <span className="text-[#A63A24]">₹{cartTotal}</span>
+                      </div>
+                    </div>
+
                     <button
                       onClick={handleWhatsAppOrder}
-                      className="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 mx-auto active:scale-95 transition-all cursor-pointer shadow-md"
+                      className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all"
                     >
                       <MessageCircle className="w-4 h-4" />
-                      <span>Send Confirmation on WhatsApp</span>
+                      <span>Send Order Receipt to WhatsApp</span>
                     </button>
                   </div>
                 )}
               </div>
 
+              {/* Price Details Footer */}
               {cart.length > 0 && checkoutStep !== 'success' && (
-                <div className="p-6 border-t border-stone-200/80 bg-white/80 backdrop-blur-md space-y-3">
-                  <div className="space-y-1.5 text-xs text-stone-600">
+                <div className="p-4 sm:p-6 border-t border-stone-200/80 bg-white/80 backdrop-blur-md space-y-3">
+                  <div className="space-y-1 text-xs text-stone-600">
                     <div className="flex justify-between">
-                      <span>Subtotal</span>
-                      <span className="font-medium text-stone-900">₹{cartTotal + cartSavings}</span>
+                      <span>Price ({totalCartCount} Items)</span>
+                      <span>₹{cartTotal + cartSavings}</span>
                     </div>
                     <div className="flex justify-between text-emerald-700">
-                      <span>Introductory Discount</span>
+                      <span>Special Launch Discount</span>
                       <span>-₹{cartSavings}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Delivery in Modern City</span>
+                      <span>Delivery Charges</span>
                       <span className="text-emerald-700 font-bold">FREE</span>
                     </div>
                     <div className="flex justify-between text-sm font-serif font-black text-stone-900 pt-2 border-t border-stone-200">
@@ -1140,25 +1089,15 @@ export default function App(): React.JSX.Element {
                   </div>
 
                   {checkoutStep === 'cart' ? (
-                    <div className="space-y-2.5 pt-1">
-                      <button
-                        onClick={() => setCheckoutStep('details')}
-                        className="w-full py-3 rounded-2xl bg-[#A63A24]/90 backdrop-blur-md hover:bg-[#8F2E19] border border-white/30 text-white font-bold text-sm shadow-[0_8px_20px_rgba(166,58,36,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <span>Proceed to Address</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-
-                      <button
-                        onClick={handleWhatsAppOrder}
-                        className="w-full py-2.5 rounded-2xl bg-emerald-700/90 backdrop-blur-md hover:bg-emerald-800 border border-white/30 text-white font-bold text-xs shadow-md active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        <MessageCircle className="w-4 h-4" />
-                        <span>Instant Order via WhatsApp</span>
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => setCheckoutStep('address')}
+                      className="w-full py-3.5 rounded-2xl bg-[#A63A24] hover:bg-[#8F2E19] text-white font-bold text-sm shadow-[0_8px_20px_rgba(166,58,36,0.35)] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <span>Proceed to Delivery Address</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
                   ) : (
-                    <div className="flex gap-2.5 pt-1">
+                    <div className="flex gap-2">
                       <button
                         onClick={() => setCheckoutStep('cart')}
                         className="px-4 py-3 rounded-2xl bg-white border border-stone-300 text-stone-700 font-bold text-xs active:scale-95 transition-all cursor-pointer"
@@ -1166,8 +1105,8 @@ export default function App(): React.JSX.Element {
                         Back
                       </button>
                       <button
-                        onClick={handleStandardCheckoutSubmit}
-                        className="flex-1 py-3 rounded-2xl bg-[#A63A24]/90 backdrop-blur-md hover:bg-[#8F2E19] border border-white/30 text-white font-bold text-xs shadow-md active:scale-95 transition-all cursor-pointer"
+                        onClick={handleAddressSubmit}
+                        className="flex-1 py-3 rounded-2xl bg-[#A63A24] hover:bg-[#8F2E19] text-white font-bold text-xs shadow-md active:scale-95 transition-all cursor-pointer"
                       >
                         Confirm Order (₹{cartTotal})
                       </button>
@@ -1210,7 +1149,6 @@ export default function App(): React.JSX.Element {
               </button>
             </div>
 
-            {/* 3D Slider Inside Detail Modal */}
             <div className="w-full">
               <ImageSlider 
                 images={selectedProductModal?.images || []} 
@@ -1266,7 +1204,7 @@ export default function App(): React.JSX.Element {
               </div>
             </div>
 
-            <div className="p-3.5 bg-amber-50/70 rounded-xl border border-amber-200 text-xs text-stone-700 space-y-1">
+            <div className="p-3.5 bg-amber-50/70 rounded-2xl border border-amber-200 text-xs text-stone-700 space-y-1">
               <div className="font-bold text-amber-950">Storage Instructions:</div>
               <p>{selectedProductModal.storage}</p>
               <div className="text-[11px] text-amber-800 font-medium pt-1">
@@ -1293,7 +1231,7 @@ export default function App(): React.JSX.Element {
         </div>
       )}
 
-      {/* MULTI-COLORED SPICE POWDER BURST PARTICLES */}
+      {/* Spice Powder Burst */}
       {powderBursts.map((burst) => (
         <div
           key={burst.id}
@@ -1330,24 +1268,13 @@ export default function App(): React.JSX.Element {
       <footer id="contact" className="bg-[#1C1917] text-stone-300 pt-16 pb-12 border-t-4 border-[#A63A24]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-stone-800">
-            
             <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#2A2421] border border-[#DCA142]/40 flex items-center justify-center overflow-hidden">
-                  {!logoFailed ? (
-                    <img src="/logo.png" alt="Khare Masale" className="w-full h-full object-contain p-0.5" />
-                  ) : (
-                    <span className="font-serif italic font-bold text-amber-400 text-sm">KM</span>
-                  )}
-                </div>
-                <span className="font-serif text-2xl font-black text-amber-400">Khare Masale</span>
-              </div>
+              <span className="font-serif text-2xl font-black text-amber-400">Khare Masale</span>
               <p className="font-serif italic text-stone-400 text-sm">
                 &ldquo;Ghar mein aane do&rdquo;
               </p>
               <p className="text-xs text-stone-400 leading-relaxed">
-                Handcrafted South-Indian spice essentials. Pure lentils, slow-roasted aromatics, 
-                and no artificial additives.
+                Handcrafted South-Indian spice essentials. Pure lentils, slow-roasted aromatics, and no artificial additives.
               </p>
               <div className="text-xs text-amber-300 font-mono">
                 Website: www.kharemasale.com
@@ -1360,8 +1287,6 @@ export default function App(): React.JSX.Element {
                 <li><a href="#products" className="hover:text-amber-400 transition-colors">Podi Masala (150g)</a></li>
                 <li><a href="#products" className="hover:text-amber-400 transition-colors">Sambar Powder (150g)</a></li>
                 <li><a href="#combo" className="hover:text-amber-400 transition-colors">Duo Launch Combo (₹400)</a></li>
-                <li><a href="#how-to-use" className="hover:text-amber-400 transition-colors">Recipe &amp; Usage Guide</a></li>
-                <li><a href="#why-us" className="hover:text-amber-400 transition-colors">Sustainable Packaging</a></li>
               </ul>
             </div>
 
@@ -1372,52 +1297,31 @@ export default function App(): React.JSX.Element {
                   <Phone className="w-3.5 h-3.5 text-amber-400" />
                   <a href="tel:8796617874" className="hover:text-white">8796617874 (WhatsApp)</a>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5 text-stone-500" />
-                  <span>9220288874 / 9220388874</span>
-                </div>
                 <div className="flex items-center gap-2 pt-1">
                   <Mail className="w-3.5 h-3.5 text-amber-400" />
                   <a href="mailto:support@kharemasale.com" className="hover:text-white">support@kharemasale.com</a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5 text-amber-400" />
-                  <a href="mailto:feedback@kharemasale.com" className="hover:text-white">feedback@kharemasale.com</a>
                 </div>
               </div>
             </div>
 
             <div className="space-y-3">
-              <h4 className="text-xs uppercase tracking-widest font-black text-white">Shipping &amp; Fulfilment</h4>
+              <h4 className="text-xs uppercase tracking-widest font-black text-white">Shipping &amp; Delivery</h4>
               <p className="text-xs text-stone-400 leading-relaxed">
-                Modern City express delivery: <strong>2-3 business days</strong>.
+                All-India express shipping within <strong>2 to 4 business days</strong>.
               </p>
               <div className="p-3 rounded-xl bg-stone-900 border border-stone-800 text-[11px] text-stone-400">
-                Fulfilled under Goldie Masale shipping policy standards.
-              </div>
-              <div className="text-[10px] text-stone-500">
-                Batch No. 1 • Best Before 12 Months from Packing
+                Tamper-proof sealed pouch packaging.
               </div>
             </div>
-
           </div>
 
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-500 gap-4">
-            <div>
-              © 2026 Khare Masale. All rights reserved. Product of India.
-            </div>
-            <div className="flex gap-4">
-              <span>Privacy Policy</span>
-              <span>•</span>
-              <span>Terms of Service</span>
-              <span>•</span>
-              <span>Shipping Policy</span>
-            </div>
+            <div>© 2026 Khare Masale. All rights reserved. Product of India.</div>
           </div>
         </div>
       </footer>
 
-      {/* INLINE CSS KEYFRAMES */}
+      {/* Keyframe Animations */}
       <style>{`
         @keyframes powderParticle {
           0% {
