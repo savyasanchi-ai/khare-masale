@@ -79,6 +79,24 @@ const ChevronRight = ({ className = "w-4 h-4" }: { className?: string }) => (
   </svg>
 );
 
+const Flame = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+  </svg>
+);
+
+const HeartHandshake = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+  </svg>
+);
+
+const Award = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V6a2 2 0 10-2 2h2zm0 13l-3-3m3 3l3-3m-6-8h6" />
+  </svg>
+);
+
 const MessageCircle = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -190,7 +208,7 @@ function ImageSlider({ images, alt = 'Product Image' }: { images?: string[]; alt
   );
 }
 
-// --- INTERFACES ---
+// --- DATA TYPES ---
 interface NutritionItem {
   label: string;
   value: string;
@@ -206,6 +224,7 @@ interface Product {
   mrp: number;
   images: string[];
   tagline: string;
+  accentColor: string;
   badge: string;
   description: string;
   proteinNote: string;
@@ -264,6 +283,7 @@ const PRODUCTS: Product[] = [
     mrp: 240,
     images: ['/podi.png', '/podi2.png', '/podi3.png'],
     tagline: 'The only multipurpose Podi Masale you will ever need.',
+    accentColor: '#D97706',
     badge: 'High Protein Blend',
     description:
       'If your meals are looking sad, bland, and entirely forgettable, your plate is practically begging for a little Podi magic. Crafted with roasted lentils and aromatic spices—this is the ultimate flavor upgrade everyday food desperately needs.',
@@ -295,6 +315,7 @@ const PRODUCTS: Product[] = [
     mrp: 240,
     images: ['/sambar.png', '/sambar2.png', '/sambar3.png'],
     tagline: 'Zero drama of ten different spice jars.',
+    accentColor: '#B91C1C',
     badge: 'Authentic South-Style',
     description:
       'The only Sambar Masale you will ever need. Because your kitchen does not need the chaos of ten different spice jars. We kept it simple, hassle-free, and 100% preservative-free—keeping it as fresh as your attitude from the first scoop to the last.',
@@ -342,7 +363,7 @@ export default function App(): React.JSX.Element {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [logoFailed, setLogoFailed] = useState(false);
 
-  // Flipkart / Amazon style delivery address
+  // Amazon / Flipkart Delivery Address Details
   const [address, setAddress] = useState<DeliveryAddress>({
     fullName: '',
     phone: '',
@@ -356,7 +377,7 @@ export default function App(): React.JSX.Element {
     paymentMethod: 'COD'
   });
 
-  // Particle Effects
+  // Powder Burst & Floral Particle State
   const [powderBursts, setPowderBursts] = useState<
     Array<{ id: number; x: number; y: number; particles: Array<{ dx: number; dy: number; color: string; size: number }> }>
   >([]);
@@ -466,7 +487,6 @@ export default function App(): React.JSX.Element {
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   }, [cart]);
 
-  // Form submission -> Confirmation
   const handleAddressSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!address.fullName || !address.phone || !address.pincode || !address.houseNo || !address.city || !address.state) {
@@ -476,7 +496,6 @@ export default function App(): React.JSX.Element {
     setCheckoutStep('success');
   };
 
-  // Formatted WhatsApp Order with Complete Flipkart-style Address
   const handleWhatsAppOrder = () => {
     if (cart.length === 0) return;
     const itemList = cart
@@ -484,7 +503,7 @@ export default function App(): React.JSX.Element {
       .join('%0A');
 
     const addressPayload = address.fullName
-      ? `%0A%0A📦 *SHIPPING DETAILS (India Delivery):*%0A👤 Name: ${encodeURIComponent(address.fullName)}%0A📞 Phone: ${encodeURIComponent(address.phone)}%0A🏠 Address: ${encodeURIComponent(`${address.houseNo}, ${address.street}${address.landmark ? ', Near ' + address.landmark : ''}`)}%0A📍 City & State: ${encodeURIComponent(`${address.city}, ${address.state} - ${address.pincode}`)}%0A🏷️ Type: ${address.addressType}%0A💳 Payment: ${address.paymentMethod}`
+      ? `%0A%0A📦 *DELIVERY ADDRESS (All-India Express):*%0A👤 Name: ${encodeURIComponent(address.fullName)}%0A📞 Phone: ${encodeURIComponent(address.phone)}%0A🏠 Address: ${encodeURIComponent(`${address.houseNo}, ${address.street}${address.landmark ? ', Near ' + address.landmark : ''}`)}%0A📍 City & State: ${encodeURIComponent(`${address.city}, ${address.state} - ${address.pincode}`)}%0A🏷️ Type: ${address.addressType}%0A💳 Payment: ${address.paymentMethod}`
       : '';
 
     const message = `Namaste Khare Masale team! 🙏%0AI would like to place an order:%0A%0A${itemList}%0A%0A*Total Amount:* ₹${cartTotal} (Saved ₹${cartSavings})${addressPayload}%0A%0APlease confirm my order & dispatch details!`;
@@ -501,11 +520,11 @@ export default function App(): React.JSX.Element {
         <span className="hidden md:inline">• Fast 2-4 Day Delivery All Over India</span>
       </div>
 
-      {/* Responsive Glass Navbar */}
+      {/* Mobile-Optimized Glass Navbar */}
       <header className="sticky top-0 z-40 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-amber-900/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-all">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
           
-          {/* Logo & Brand */}
+          {/* Logo & Brand Title */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <div className="relative w-9 h-9 sm:w-11 sm:h-11 shrink-0 rounded-xl sm:rounded-2xl bg-[#1C1917] flex items-center justify-center border border-[#E5A83B]/60 shadow-[0_4px_12px_rgba(0,0,0,0.15)] overflow-hidden">
               {!logoFailed ? (
@@ -537,7 +556,7 @@ export default function App(): React.JSX.Element {
             </div>
           </div>
 
-          {/* Navigation & Cart */}
+          {/* Navigation & Cart Button */}
           <div className="flex items-center shrink-0">
             <nav className="hidden md:flex items-center gap-8 lg:gap-11 text-sm font-semibold text-stone-700 mr-8">
               <a href="#products" className="hover:text-[#782312] transition-colors">Product Directory</a>
@@ -693,7 +712,7 @@ export default function App(): React.JSX.Element {
         </div>
       </section>
 
-      {/* Combo Banner Section */}
+      {/* COMBO DEAL BANNER SECTION */}
       <section id="combo" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#782312] via-[#8F2E19] to-[#A63A24] text-white shadow-[0_20px_50px_rgba(120,35,18,0.3)] p-8 sm:p-12 lg:p-14 border border-white/20">
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -741,15 +760,166 @@ export default function App(): React.JSX.Element {
                   <ShoppingBag className="w-4 h-4" />
                   <span>Claim Combo Deal</span>
                 </button>
+
+                <p className="text-[11px] text-amber-100/70">
+                  ⚡ Limited first batch inventory available.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Why Choose Us & Express All-India Shipping */}
-      <section id="why-us" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-white/80 backdrop-blur-md border border-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.04)] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      {/* HOW TO USE SECTION (RESTORED IN FULL) */}
+      <section id="how-to-use" className="py-20 bg-[#F7F2E7]/70 border-y border-amber-900/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
+            <span className="text-xs font-bold uppercase tracking-widest text-amber-800 bg-amber-100/80 backdrop-blur-xs px-3 py-1 rounded-full border border-amber-300">
+              Kitchen Tips &amp; Magic
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-[#36130B]">
+              How to Enjoy Your Podi &amp; Sambar
+            </h2>
+            <p className="text-stone-600 text-sm sm:text-base">
+              From comforting South-Indian breakfasts to quick veggie roasts, here are the easiest ways to unlock maximum flavor:
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                step: '01',
+                title: 'The Classic Idli Dip',
+                icon: '🥞',
+                desc: 'Mix 2 tablespoons of Khare Podi with warm melted ghee or cold-pressed sesame oil. Dip hot idlis straight in!'
+              },
+              {
+                step: '02',
+                title: 'Crispy Dosa Topping',
+                icon: '🍳',
+                desc: 'Sprinkle podi generously over the dosa right as it sizzles on the tawa, drizzle a dash of oil, and fold.'
+              },
+              {
+                step: '03',
+                title: 'Comforting Podi Rice',
+                icon: '🍚',
+                desc: 'Stir a spoonful of Podi directly into hot, freshly cooked steamed rice with melted ghee. Pure soul food.'
+              },
+              {
+                step: '04',
+                title: 'Crunchy Veggie Toss',
+                icon: '🥔',
+                desc: 'Toss diced baby potatoes, cauliflower, or bhindi with oil and podi before air-frying or pan-roasting.'
+              }
+            ].map((card, idx) => (
+              <div
+                key={idx}
+                className="bg-white/80 backdrop-blur-md rounded-2xl p-6 border border-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)] hover:shadow-md transition-shadow relative space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl">{card.icon}</span>
+                  <span className="font-mono text-xs font-black text-amber-800/40 bg-amber-50/80 px-2 py-0.5 rounded">
+                    {card.step}
+                  </span>
+                </div>
+                <h4 className="font-serif text-lg font-bold text-stone-900 pt-1">
+                  {card.title}
+                </h4>
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                  {card.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Sambar Special Recipe Callout */}
+          <div className="mt-8 bg-white/80 backdrop-blur-md rounded-3xl p-6 border border-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.04)] flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4 text-center md:text-left">
+              <span className="text-3xl">🍲</span>
+              <div>
+                <h5 className="font-serif font-bold text-stone-900 text-base">Making aromatic Sambar with Khare Powder?</h5>
+                <p className="text-xs sm:text-sm text-stone-600">
+                  Boil Toor dal with tamarind pulp &amp; your favorite veggies (drumsticks, shallots, pumpkin). Add 2 spoons of Khare Sambar Powder in the last 5 minutes for authentic aroma without burning the spices!
+                </p>
+              </div>
+            </div>
+            
+            <button
+              onClick={(e) => addToCart(PRODUCTS[1], e)}
+              className="px-5 py-2.5 rounded-2xl bg-amber-100/80 backdrop-blur-md hover:bg-amber-200 border border-amber-300/80 text-amber-900 text-xs font-black shrink-0 active:scale-95 transition-all duration-150 cursor-pointer shadow-xs"
+            >
+              Get Sambar Powder (₹220)
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY CHOOSE US SECTION (RESTORED ALL 6 FEATURES) */}
+      <section id="why-us" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#A63A24] bg-red-50/80 backdrop-blur-xs px-3 py-1 rounded-full border border-red-200">
+            Purity You Can Taste
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-[#36130B]">
+            Why Khare Masale Belongs in Your Pantry
+          </h2>
+          <p className="text-stone-600 text-sm sm:text-base">
+            Crafted for modern homes that crave traditional authenticity without the hassle.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            {
+              title: 'Product of India',
+              desc: 'Sourced directly from native spice fields with uncompromised quality and heritage recipes.',
+              icon: Award
+            },
+            {
+              title: 'Pocket-Friendly Value',
+              desc: 'Premium stone-ground ingredients that fit comfortably within your weekly kitchen budget.',
+              icon: Sparkles
+            },
+            {
+              title: 'Hassle-Free & Mess-Free',
+              desc: 'Designed for ultimate convenience—no multiple spice measuring, no mess, no stress.',
+              icon: ShieldCheck
+            },
+            {
+              title: 'Space-Efficient Pouches',
+              desc: 'Smart 150g stand-up packaging that saves counter and pantry space while staying airtight.',
+              icon: Leaf
+            },
+            {
+              title: 'Fresh & Preservative-Free',
+              desc: 'Pure, fresh taste without any artificial additives, fillers, colors, or MSG.',
+              icon: Flame
+            },
+            {
+              title: '100% Sustainable Packaging',
+              desc: 'Eco-conscious packaging crafted to be gentle on the earth while locking in spice freshness.',
+              icon: HeartHandshake
+            }
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="p-6 rounded-2xl bg-white/75 backdrop-blur-md border border-white/80 shadow-[0_8px_20px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.9)] hover:border-amber-700/30 transition-all flex flex-col justify-start space-y-3"
+            >
+              <div className="w-10 h-10 rounded-xl bg-amber-50/90 border border-amber-200/80 flex items-center justify-center text-[#A63A24]">
+                <item.icon className="w-5 h-5" />
+              </div>
+              <h4 className="font-serif text-lg font-bold text-stone-900">
+                {item.title}
+              </h4>
+              <p className="text-stone-600 text-xs sm:text-sm leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Express Shipping Card */}
+        <div className="mt-10 rounded-3xl bg-white/80 backdrop-blur-md border border-white/90 shadow-[0_12px_32px_rgba(0,0,0,0.04)] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-[#A63A24] text-white flex items-center justify-center shrink-0 shadow-md">
               <Truck className="w-6 h-6" />
@@ -786,7 +956,7 @@ export default function App(): React.JSX.Element {
                   {checkoutStep === 'address' ? (
                     <button
                       onClick={() => setCheckoutStep('cart')}
-                      className="p-1 rounded-lg hover:bg-stone-200 text-stone-600 mr-1 text-sm font-bold flex items-center"
+                      className="p-1 rounded-lg hover:bg-stone-200 text-stone-600 mr-1 text-sm font-bold flex items-center cursor-pointer"
                     >
                       ←
                     </button>
@@ -876,7 +1046,6 @@ export default function App(): React.JSX.Element {
                 ) : checkoutStep === 'address' ? (
                   /* FLIPKART & AMAZON STYLE CHECKOUT FORM */
                   <form onSubmit={handleAddressSubmit} className="space-y-4 text-xs">
-                    {/* Contact Info Header */}
                     <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 space-y-3">
                       <div className="font-serif font-bold text-stone-800 flex items-center gap-1.5 text-xs">
                         <span>1. Contact Details</span>
@@ -908,7 +1077,6 @@ export default function App(): React.JSX.Element {
                       </div>
                     </div>
 
-                    {/* Address Fields */}
                     <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 space-y-3">
                       <div className="font-serif font-bold text-stone-800 flex items-center gap-1.5 text-xs">
                         <MapPin className="w-3.5 h-3.5 text-[#A63A24]" />
@@ -997,7 +1165,6 @@ export default function App(): React.JSX.Element {
                       </div>
                     </div>
 
-                    {/* Payment Mode */}
                     <div className="bg-stone-50 p-3 rounded-xl border border-stone-200 space-y-2">
                       <div className="font-serif font-bold text-stone-800 text-xs">3. Payment Mode</div>
                       <div className="grid grid-cols-2 gap-2">
@@ -1057,7 +1224,7 @@ export default function App(): React.JSX.Element {
 
                     <button
                       onClick={handleWhatsAppOrder}
-                      className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all"
+                      className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl font-bold text-xs flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer"
                     >
                       <MessageCircle className="w-4 h-4" />
                       <span>Send Order Receipt to WhatsApp</span>
@@ -1231,7 +1398,7 @@ export default function App(): React.JSX.Element {
         </div>
       )}
 
-      {/* Spice Powder Burst */}
+      {/* Spice Powder Burst Particles */}
       {powderBursts.map((burst) => (
         <div
           key={burst.id}
@@ -1264,17 +1431,28 @@ export default function App(): React.JSX.Element {
         </div>
       )}
 
-      {/* Footer */}
+      {/* FOOTER (RESTORED ALL DETAILS) */}
       <footer id="contact" className="bg-[#1C1917] text-stone-300 pt-16 pb-12 border-t-4 border-[#A63A24]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-stone-800">
+            
             <div className="space-y-4">
-              <span className="font-serif text-2xl font-black text-amber-400">Khare Masale</span>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#2A2421] border border-[#DCA142]/40 flex items-center justify-center overflow-hidden">
+                  {!logoFailed ? (
+                    <img src="/logo.png" alt="Khare Masale" className="w-full h-full object-contain p-0.5" />
+                  ) : (
+                    <span className="font-serif italic font-bold text-amber-400 text-sm">KM</span>
+                  )}
+                </div>
+                <span className="font-serif text-2xl font-black text-amber-400">Khare Masale</span>
+              </div>
               <p className="font-serif italic text-stone-400 text-sm">
                 &ldquo;Ghar mein aane do&rdquo;
               </p>
               <p className="text-xs text-stone-400 leading-relaxed">
-                Handcrafted South-Indian spice essentials. Pure lentils, slow-roasted aromatics, and no artificial additives.
+                Handcrafted South-Indian spice essentials. Pure lentils, slow-roasted aromatics, 
+                and no artificial additives.
               </p>
               <div className="text-xs text-amber-300 font-mono">
                 Website: www.kharemasale.com
@@ -1287,6 +1465,8 @@ export default function App(): React.JSX.Element {
                 <li><a href="#products" className="hover:text-amber-400 transition-colors">Podi Masala (150g)</a></li>
                 <li><a href="#products" className="hover:text-amber-400 transition-colors">Sambar Powder (150g)</a></li>
                 <li><a href="#combo" className="hover:text-amber-400 transition-colors">Duo Launch Combo (₹400)</a></li>
+                <li><a href="#how-to-use" className="hover:text-amber-400 transition-colors">Recipe &amp; Usage Guide</a></li>
+                <li><a href="#why-us" className="hover:text-amber-400 transition-colors">Sustainable Packaging</a></li>
               </ul>
             </div>
 
@@ -1297,31 +1477,52 @@ export default function App(): React.JSX.Element {
                   <Phone className="w-3.5 h-3.5 text-amber-400" />
                   <a href="tel:8796617874" className="hover:text-white">8796617874 (WhatsApp)</a>
                 </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="w-3.5 h-3.5 text-stone-500" />
+                  <span>9220288874 / 9220388874</span>
+                </div>
                 <div className="flex items-center gap-2 pt-1">
                   <Mail className="w-3.5 h-3.5 text-amber-400" />
                   <a href="mailto:support@kharemasale.com" className="hover:text-white">support@kharemasale.com</a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5 text-amber-400" />
+                  <a href="mailto:feedback@kharemasale.com" className="hover:text-white">feedback@kharemasale.com</a>
                 </div>
               </div>
             </div>
 
             <div className="space-y-3">
-              <h4 className="text-xs uppercase tracking-widest font-black text-white">Shipping &amp; Delivery</h4>
+              <h4 className="text-xs uppercase tracking-widest font-black text-white">Shipping &amp; Fulfilment</h4>
               <p className="text-xs text-stone-400 leading-relaxed">
-                All-India express shipping within <strong>2 to 4 business days</strong>.
+                Nationwide express delivery: <strong>2-4 business days</strong>.
               </p>
               <div className="p-3 rounded-xl bg-stone-900 border border-stone-800 text-[11px] text-stone-400">
-                Tamper-proof sealed pouch packaging.
+                Fulfilled under Goldie Masale shipping policy standards.
+              </div>
+              <div className="text-[10px] text-stone-500">
+                Batch No. 1 • Best Before 12 Months from Packing
               </div>
             </div>
+
           </div>
 
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-500 gap-4">
-            <div>© 2026 Khare Masale. All rights reserved. Product of India.</div>
+            <div>
+              © 2026 Khare Masale. All rights reserved. Product of India.
+            </div>
+            <div className="flex gap-4">
+              <span>Privacy Policy</span>
+              <span>•</span>
+              <span>Terms of Service</span>
+              <span>•</span>
+              <span>Shipping Policy</span>
+            </div>
           </div>
         </div>
       </footer>
 
-      {/* Keyframe Animations */}
+      {/* KEYFRAME ANIMATIONS */}
       <style>{`
         @keyframes powderParticle {
           0% {
